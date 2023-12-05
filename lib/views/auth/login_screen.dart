@@ -1,9 +1,14 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:inn/views/auth/forget_password_screen.dart';
+import 'package:inn/views/auth/signup_screen.dart';
 import 'package:inn/views/common_widgets/custom_button.dart';
 import 'package:inn/views/common_widgets/custom_text.dart';
 import 'package:inn/views/common_widgets/spacers.dart';
 import 'package:inn/views/common_widgets/textfield_with_title.dart';
+import 'package:inn/views/home/home.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -11,6 +16,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
@@ -40,25 +46,38 @@ class LoginScreen extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: Align(
                 alignment: Alignment.topRight,
-                child: customText(text:'Forget Password?',color: Colors.black.withOpacity(0.8),fw: FontWeight.w400,size: 10.sp),
+                child: GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>
+                      const ForgetPasswordScreen()));
+                    },
+                    child: customText(text:'Forget Password?',color: Colors.black.withOpacity(0.8),fw: FontWeight.w400,size: 10.sp)),
               ),
             ),
             heightSpacer(height: 56.h),
             customButton(containerWidth: 139.w,
-              containerHeight:42.h ,color: const Color(0xff77D63D),title: 'LogIn',),
+              containerHeight:42.h ,color: const Color(0xff77D63D),title: 'LogIn',onPress: (){
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)
+              =>const Home()), (route) => false);
+                }),
             heightSpacer(height: 10.h),
-            RichText(text: TextSpan(
-              children: [
-                TextSpan(
-                  text: 'Don’t have an account? ',
-                  style: appStyle(color:Colors.black ,fw:FontWeight.w500 ,size: 14.sp,),
-                ),
-                TextSpan(
-                  text: 'SignUp',
-                  style: appStyle(color:const Color(0xff77D63D) ,fw:FontWeight.w500 ,size: 14.sp,),
-                ),
-              ]
-            ))
+            GestureDetector(
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>const SignupScreen()));
+              },
+              child: RichText(text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'Don’t have an account? ',
+                    style: appStyle(color:Colors.black ,fw:FontWeight.w500 ,size: 14.sp,),
+                  ),
+                  TextSpan(
+                    text: 'SignUp',
+                    style: appStyle(color:const Color(0xff77D63D) ,fw:FontWeight.w500 ,size: 14.sp,),
+                  ),
+                ]
+              )),
+            )
           ],
         ),
       ),
