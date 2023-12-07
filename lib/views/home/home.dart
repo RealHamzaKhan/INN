@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:inn/views/chats/chat_screen.dart';
 import 'package:inn/views/community/community_screen.dart';
 import 'package:inn/views/home/home_scren.dart';
+import 'package:inn/views/profile/profile_screen.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -25,9 +26,7 @@ class _HomeState extends State<Home> {
       'Index 2: School',
     ),
     ChatScreen(),
-    Text(
-      'Index 2: School',
-    ),
+    ProfileScreen(),
   ];
   @override
   Widget build(BuildContext context) {

@@ -53,7 +53,7 @@ class _SignupScreenState extends State<SignupScreen> {
               heightSpacer(height: 20.h),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: textFieldWithTitle(title: 'Password',hintText: 'Enter  Password',isPass: true),
+                child: textFieldWithTitle(title: 'Password',hintText: 'Enter  Password',isPass: true,maxLines: 1),
               ),
               heightSpacer(height: 20.h),
             Padding(

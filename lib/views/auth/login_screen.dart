@@ -39,7 +39,7 @@ class LoginScreen extends StatelessWidget {
             heightSpacer(height: 47.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
-              child: textFieldWithTitle(title: 'Password',hintText: 'Enter  Password',isPass: true),
+              child: textFieldWithTitle(title: 'Password',hintText: 'Enter  Password',isPass: true,maxLines: 1),
             ),
             heightSpacer(height: 7.h),
             Padding(

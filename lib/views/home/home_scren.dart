@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:inn/views/common_widgets/custom_button.dart';
 import 'package:inn/views/common_widgets/custom_text.dart';
 import 'package:inn/views/common_widgets/spacers.dart';
+import 'package:inn/views/home/scholar_form.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -30,7 +31,10 @@ class HomeScreen extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   child: customButton(title: 'Apply as Mufti',color: const Color.fromRGBO(119, 214, 61, 1),
                   containerWidth: 180.w
-                      ,containerHeight:50.h ),
+                      ,containerHeight:50.h,
+                  onPress: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>const ScholarForm()));
+                  }),
                 ),
               )
             ],
