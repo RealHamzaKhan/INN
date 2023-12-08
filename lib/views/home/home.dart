@@ -4,6 +4,7 @@ import 'package:inn/views/chats/chat_screen.dart';
 import 'package:inn/views/community/community_screen.dart';
 import 'package:inn/views/home/home_scren.dart';
 import 'package:inn/views/profile/profile_screen.dart';
+import 'package:inn/views/qna/qna_home.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -22,9 +23,7 @@ class _HomeState extends State<Home> {
   static const List<Widget> _widgetOptions = <Widget>[
     HomeScreen(),
     CommunityScreen(),
-    Text(
-      'Index 2: School',
-    ),
+    QnaHome(),
     ChatScreen(),
     ProfileScreen(),
   ];
