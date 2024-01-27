@@ -1,11 +1,14 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:inn/utils/snackbar.dart';
 import 'package:inn/views/auth/login_screen.dart';
 import 'package:inn/views/common_widgets/custom_button.dart';
 import 'package:inn/views/common_widgets/custom_text.dart';
 import 'package:inn/views/common_widgets/spacers.dart';
 import 'package:inn/views/common_widgets/textfield_with_title.dart';
-
+import 'package:provider/provider.dart';
+import 'package:inn/provider/auth_provider.dart';
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
 
@@ -14,6 +17,19 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
+  final TextEditingController nameController=TextEditingController();
+  final TextEditingController emailController=TextEditingController();
+  final TextEditingController phoneController=TextEditingController();
+  final TextEditingController passwordController=TextEditingController();
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    passwordController.dispose();
+    // TODO: implement dispose
+    super.dispose();
+  }
    String? selectedSect;
    String? selectedGender;
   @override
@@ -38,23 +54,54 @@ class _SignupScreenState extends State<SignupScreen> {
               heightSpacer(height: 18.h),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: textFieldWithTitle(title: 'Name',hintText: 'Enter Name'),
+                child: textFieldWithTitle(title: 'Name',hintText: 'Enter Name',controller: nameController),
               ),
               heightSpacer(height: 20.h),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: textFieldWithTitle(title: 'Email Address',hintText: 'Enter Email Address'),
+                child: textFieldWithTitle(title: 'Email Address',hintText: 'Enter Email Address',controller: emailController,
+                keyboardtype: TextInputType.emailAddress),
               ),
               heightSpacer(height: 20.h),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: textFieldWithTitle(title: 'Phone Number',hintText: 'Enter  Phone Number'),
+                child: textFieldWithTitle(title: 'Phone Number',hintText: 'Enter  Phone Number',controller: phoneController,
+                keyboardtype: TextInputType.phone),
               ),
               heightSpacer(height: 20.h),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: textFieldWithTitle(title: 'Password',hintText: 'Enter  Password',isPass: true,maxLines: 1),
-              ),
+              Consumer<AuthProvider>(builder: (context,provider,child){
+                return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      customText(text: 'Password',color: Colors.black,fw:FontWeight.w500 ,size: 14.sp),
+                      heightSpacer(height: 5.h),
+                      TextFormField(
+                        controller: passwordController,
+                        maxLines: 1,
+                        obscureText: provider.showPass,
+                        decoration: InputDecoration(
+                            suffixIcon: IconButton(onPressed: (){
+                              provider.setPassStatus(!provider.showPass);
+                            }, icon: provider.showPass?Icon(Icons.visibility):Icon(Icons.visibility_off)),
+                            hintText: 'Enter Password',
+                            contentPadding:  EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
+                            focusedBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(color: Color.fromRGBO(217, 217, 217, 1)),
+                            ),
+                            enabledBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(color: Color.fromRGBO(217, 217, 217, 0.34)),
+                            ),
+                            filled: true,
+                            fillColor: const Color.fromRGBO(217, 217, 217, 0.34)
+                        )
+                      )
+                    ],
+                  )
+                );
+              }),
               heightSpacer(height: 20.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -138,8 +185,33 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
               ),
               heightSpacer(height: 30.h),
-              customButton(containerWidth: 139.w,
-                containerHeight:42.h ,color: const Color(0xff77D63D),title: 'SignUp',),
+              Consumer<AuthProvider>(builder: (context,provider,child){
+                return provider.loadingStatus?customButton(
+                  containerWidth: 139.w,
+                  containerHeight:42.h ,color: const Color(0xff77D63D).withOpacity(0.3),title: 'SignUp',):customButton(
+                  onPress: (){
+                    if(nameController.text.isEmpty | passwordController.text.isEmpty
+                    | emailController.text.isEmpty | (selectedSect?.isEmpty ?? true) | (selectedGender?.isEmpty ?? true)
+                    | phoneController.text.isEmpty
+                    ){
+                      showSnackBar(context: context,text: 'Kindly fill all the required fields',
+                      color: Colors.red);
+                    }
+                    else{
+                      provider.signUp(
+                          context: context,
+                          name: nameController.text,
+                          email: emailController.text,
+                          phone: phoneController.text,
+                          password: passwordController.text,
+                          sect: selectedSect!,
+                          gender: selectedGender!);
+                    }
+                  },
+                  containerWidth: 139.w,
+                  containerHeight:42.h ,color: const Color(0xff77D63D),title: 'SignUp',);
+
+              }),
               heightSpacer(height: 10.h),
               GestureDetector(
                 onTap: (){

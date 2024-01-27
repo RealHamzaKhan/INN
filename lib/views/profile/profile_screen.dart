@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:inn/views/common_widgets/custom_button.dart';
@@ -5,6 +6,9 @@ import 'package:inn/views/common_widgets/custom_text.dart';
 import 'package:inn/views/common_widgets/profile_custom_widget.dart';
 import 'package:inn/views/common_widgets/spacers.dart';
 import 'package:inn/views/profile/edit_profile.dart';
+import 'package:provider/provider.dart';
+
+import '../../provider/auth_provider.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -57,7 +61,15 @@ class ProfileScreen extends StatelessWidget {
                   heightSpacer(height: 10.h),
                   profileCustomWidget(text: 'Help And Support', iconData: Icons.help, onTap: (){}),
                   heightSpacer(height: 60.h),
-                  customButton(containerWidth: 139.w,containerHeight:42.h ,title: 'LogOut',color: Color.fromRGBO(119, 214, 61, 1))
+                 Consumer<AuthProvider>(builder: (context,provider,child){
+                   return customButton(
+                       onPress: (){
+                         provider.logout(context: context);
+                       },
+                       containerWidth: 139.w,
+                       containerHeight:42.h ,
+                       title: 'LogOut',color: Color.fromRGBO(119, 214, 61, 1));
+                 })
                 ],
               ),
             ),

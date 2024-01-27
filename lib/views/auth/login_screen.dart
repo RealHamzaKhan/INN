@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:inn/views/auth/forget_password_screen.dart';
@@ -9,10 +7,34 @@ import 'package:inn/views/common_widgets/custom_text.dart';
 import 'package:inn/views/common_widgets/spacers.dart';
 import 'package:inn/views/common_widgets/textfield_with_title.dart';
 import 'package:inn/views/home/home.dart';
+import 'package:provider/provider.dart';
+import 'package:inn/provider/auth_provider.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final emailController=TextEditingController();
+  final passwordController=TextEditingController();
+  late final AuthProvider authProvider;
+  @override
+  void initState() {
+    authProvider=context.read<AuthProvider>();
+    authProvider.setInitializedRoute();
+    // TODO: implement initState
+    super.initState();
+  }
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    // TODO: implement dispose
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,13 +56,42 @@ class LoginScreen extends StatelessWidget {
             heightSpacer(height: 124.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
-              child: textFieldWithTitle(title: 'Email Address',hintText: 'Enter Email Address'),
+              child: textFieldWithTitle(title: 'Email Address',hintText: 'Enter Email Address',controller: emailController),
             ),
             heightSpacer(height: 47.h),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
-              child: textFieldWithTitle(title: 'Password',hintText: 'Enter  Password',isPass: true,maxLines: 1),
-            ),
+            Consumer<AuthProvider>(builder: (context,provider,child){
+              return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      customText(text: 'Password',color: Colors.black,fw:FontWeight.w500 ,size: 14.sp),
+                      heightSpacer(height: 5.h),
+                      TextFormField(
+                          controller: passwordController,
+                          maxLines: 1,
+                          obscureText: provider.showPass,
+                          decoration: InputDecoration(
+                              suffixIcon: IconButton(onPressed: (){
+                                provider.setPassStatus(!provider.showPass);
+                              }, icon: provider.showPass?Icon(Icons.visibility):Icon(Icons.visibility_off)),
+                              hintText: 'Enter Password',
+                              contentPadding:  EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Color.fromRGBO(217, 217, 217, 1)),
+                              ),
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Color.fromRGBO(217, 217, 217, 0.34)),
+                              ),
+                              filled: true,
+                              fillColor: const Color.fromRGBO(217, 217, 217, 0.34)
+                          )
+                      )
+                    ],
+                  )
+              );
+            }),
             heightSpacer(height: 7.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -55,11 +106,14 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
             heightSpacer(height: 56.h),
-            customButton(containerWidth: 139.w,
-              containerHeight:42.h ,color: const Color(0xff77D63D),title: 'LogIn',onPress: (){
-              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)
-              =>const Home()), (route) => false);
-                }),
+            Consumer<AuthProvider>(builder: (context,provider,child){
+              return provider.loadingStatus? customButton(containerWidth: 139.w,
+                  containerHeight:42.h ,color: const Color(0xff77D63D).withOpacity(0.3),title: 'LogIn',onPress: (){
+                  }):customButton(containerWidth: 139.w,
+                  containerHeight:42.h ,color: const Color(0xff77D63D),title: 'LogIn',onPress: (){
+                    provider.login(context: context, email: emailController.text, password: passwordController.text);
+                  });
+            }),
             heightSpacer(height: 10.h),
             GestureDetector(
               onTap: (){

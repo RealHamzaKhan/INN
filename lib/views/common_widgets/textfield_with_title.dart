@@ -5,7 +5,7 @@ import 'package:inn/views/common_widgets/custom_text.dart';
 import 'package:inn/views/common_widgets/spacers.dart';
 
 Column textFieldWithTitle({final String? title,final String? hintText,final TextEditingController? controller,
-  bool isPass=false,final int? minLines,final int? maxLines
+  bool isPass=false,final int? minLines,final int? maxLines,final TextInputType? keyboardtype,
 }){
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -14,6 +14,7 @@ Column textFieldWithTitle({final String? title,final String? hintText,final Text
       customText(text: title,color: Colors.black,fw:FontWeight.w500 ,size: 14.sp),
       heightSpacer(height: 5.h),
       TextFormField(
+        keyboardType: keyboardtype,
         controller: controller,
         minLines: minLines,
         maxLines: maxLines,
