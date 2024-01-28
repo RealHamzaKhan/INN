@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:inn/provider/auth_provider.dart';
 import 'package:inn/provider/init_provider.dart';
+import 'package:inn/provider/user_provider.dart';
 import 'package:inn/views/onboarding/splash_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,6 +30,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(providers: [
       ChangeNotifierProvider(create: (context)=>AuthProvider()),
       ChangeNotifierProvider(create: (context)=>InitProvider()),
+      ChangeNotifierProvider(create: (context)=>UserProvider())
+
     ],
     child: ScreenUtilInit(
       designSize: const Size(375, 812),
