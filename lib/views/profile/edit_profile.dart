@@ -73,7 +73,7 @@ class _EditProfileState extends State<EditProfile> {
         child: StreamBuilder(stream: FirebaseServices.getUserDetails(uid: user!.uid),
             builder: (context,AsyncSnapshot<QuerySnapshot>snapshot){
           if(snapshot.hasError || !snapshot.hasData || snapshot.connectionState==ConnectionState.waiting){
-            return  Center(child: CircularProgressIndicator(
+            return  const Center(child: CircularProgressIndicator(
               color: Colors.green,
               strokeWidth: 10,
             ),);
