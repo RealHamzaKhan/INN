@@ -5,3 +5,4 @@ import 'package:firebase_auth/firebase_auth.dart';
  String usersCollection='users';
  final user=FirebaseAuth.instance.currentUser;
  String postCollection='posts';
+ String muftiCollection='mufti';

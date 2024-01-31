@@ -1,9 +1,17 @@
+
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:inn/const/firebase_const.dart';
+import 'package:inn/provider/auth_provider.dart';
 import 'package:inn/views/common_widgets/custom_text.dart';
 import 'package:inn/views/common_widgets/spacers.dart';
 import 'package:inn/views/common_widgets/textfield_with_title.dart';
+import 'package:provider/provider.dart';
 
+import '../../utils/snackbar.dart';
 import '../common_widgets/custom_button.dart';
 
 class ScholarForm extends StatefulWidget {
@@ -14,15 +22,58 @@ class ScholarForm extends StatefulWidget {
 }
 
 class _ScholarFormState extends State<ScholarForm> {
+  final TextEditingController nameController=TextEditingController();
+  final TextEditingController emailController=TextEditingController();
+  final TextEditingController phoneController=TextEditingController();
+  final TextEditingController bioController=TextEditingController();
   String? selectedSect;
   String? selectedSpeciality;
+  File? _selectedFile;
+  bool applied=false;
+  getStatus()async{
+    await firestore.collection(muftiCollection).where('uid',isEqualTo: user!.uid).get().then((value) {
+      if(value.docs.isNotEmpty){
+        setState(() {
+          applied=true;
+        });
+      }
+    });
+  }
+  Future<void> _pickFile() async {
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _selectedFile = File(pickedFile.path);
+      });
+    }
+  }
+  @override
+  void initState() {
+    getStatus();
+    // TODO: implement initState
+    super.initState();
+  }
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    bioController.dispose();
+    // TODO: implement dispose
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(child: SingleChildScrollView(
+      body: SafeArea(
+
+          child:applied?Center(
+              child: customText(text: "You had already Applied",fw: FontWeight.w700,size: 20.sp,
+                  color: Colors.black.withOpacity(0.4)
+              )): SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        child: Padding(
+        child:Padding(
           padding: EdgeInsets.only(bottom: 20.h),
           child: Column(
             children: [
@@ -41,13 +92,13 @@ class _ScholarFormState extends State<ScholarForm> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     heightSpacer(height: 18.h),
-                    textFieldWithTitle(title: 'Name',hintText: 'Enter Name'),
+                    textFieldWithTitle(title: 'Name',hintText: 'Enter Name',controller: nameController),
                     heightSpacer(height: 20.h),
-                    textFieldWithTitle(title: 'Email Address',hintText: 'Enter Email Address'),
+                    textFieldWithTitle(title: 'Email Address',hintText: 'Enter Email Address',controller: emailController),
                     heightSpacer(height: 20.h),
-                    textFieldWithTitle(title: 'Phone Number',hintText: 'Enter Phone Number'),
-                    heightSpacer(height: 20.h),
-                    textFieldWithTitle(title: 'Name',hintText: 'Enter Name'),
+                    textFieldWithTitle(title: 'Phone Number',hintText: 'Enter Phone Number',controller: phoneController,
+                    keyboardtype: TextInputType.phone
+                    ),
                     heightSpacer(height: 20.h),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -126,33 +177,66 @@ class _ScholarFormState extends State<ScholarForm> {
                       ],
                     ),
                     heightSpacer(height: 20.h),
-                    textFieldWithTitle(title: 'Bio',hintText: 'Write something about yourself',minLines: 4,maxLines: null),
+                    textFieldWithTitle(title: 'Bio',hintText: 'Write something about yourself',
+                        minLines: 4,maxLines: null,controller: bioController),
                     heightSpacer(height: 20.h),
                     customText(text: 'Degree / Certificate'
                     ,size: 14.sp,fw: FontWeight.w500),
                     heightSpacer(height: 5.h),
-                    Container(
-                      alignment: Alignment.center,
-                      height: 126.h,
-                      width: 334.w,
-                      decoration: const BoxDecoration(
-                        color: Color.fromRGBO(217, 217, 217, 0.34)
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          customText(text: 'Upload verified certificate/degree'
-                          ,color: Colors.black.withOpacity(0.25),size: 14.sp,fw: FontWeight.w500),
-                          Icon(Icons.upload,color: Colors.black.withOpacity(0.25),size: 45.36.w,),
-                          customText(text: '*Only pdf or image format'
-                              ,color: Colors.black.withOpacity(0.25),size: 14.sp,fw: FontWeight.w500),
-                        ],
+                    GestureDetector(
+                      onTap: (){
+                        _pickFile();
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 126.h,
+                        width: 334.w,
+                        decoration: const BoxDecoration(
+                          color: Color.fromRGBO(217, 217, 217, 0.34)
+                        ),
+                        child: _selectedFile==null?Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            customText(text: 'Upload verified certificate/degree'
+                            ,color: Colors.black.withOpacity(0.25),size: 14.sp,fw: FontWeight.w500),
+                            Icon(Icons.upload,color: Colors.black.withOpacity(0.25),size: 45.36.w,),
+                            customText(text: '*Only pdf or image format'
+                                ,color: Colors.black.withOpacity(0.25),size: 14.sp,fw: FontWeight.w500),
+                          ],
+                        ):Image(image: FileImage(File(_selectedFile!.path)),
+                        fit: BoxFit.fill,),
                       ),
                     ),
                     heightSpacer(height: 13.h),
-                    Align(
-                        alignment: Alignment.center,
-                        child: customButton(containerHeight:42.h ,containerWidth: 139.w,color:const Color.fromRGBO(119, 214, 61, 1) ,title: 'Apply'))
+                    Consumer<AuthProvider>(builder: (context,provider,child){
+                      return Align(
+                          alignment: Alignment.center,
+                          child: customButton(onPress: (){
+                            if(nameController.text.isEmpty || emailController.text.isEmpty
+                            || phoneController.text.isEmpty ||
+                                (selectedSect?.isEmpty ?? true) ||
+                                (selectedSpeciality?.isEmpty ?? true)
+                            || bioController.text.isEmpty
+                            || phoneController.text.isEmpty || _selectedFile==null){
+                              showSnackBar(context: context,text: 'Kindly fill all the required fields',
+                                  color: Colors.red);
+                            }
+                            else{
+                              provider.uploadMuftiData(
+                                context: context,
+                                  selectedFile: _selectedFile!,
+                                  uid: user!.uid,
+                                  name: nameController.text,
+                                  email: emailController.text,
+                                  number: phoneController.text,
+                                  sect: selectedSect!,
+                                  speciality: selectedSpeciality!,
+                                  bio: bioController.text,);
+                            }
+                          },containerHeight:42.h ,containerWidth: 139.w,color:
+                          provider.loadingStatus?const Color.fromRGBO(119, 214, 61, 0.3)
+                              :const Color.fromRGBO(119, 214, 61, 1),title: 'Apply'));
+                    })
 
                   ],
                 ),

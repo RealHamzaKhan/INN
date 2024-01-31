@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:inn/const/firebase_const.dart';
@@ -89,5 +92,60 @@ class AuthProvider with ChangeNotifier{
       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>
       const LoginScreen()), (route) => false);
     });
+  }
+  Future<String> _uploadFile({required File selectedFile}) async {
+    if (selectedFile == null) {
+      return 'error';
+    }
+    String url;
+
+    final firebaseStorageRef = FirebaseStorage.instance.ref();
+    final uploadTask = firebaseStorageRef
+        .child('mufti/${selectedFile.path.split('/').last}')
+        .putFile(selectedFile);
+
+    final snapshot = await uploadTask.whenComplete(() => null);
+    final downloadURL = await snapshot.ref.getDownloadURL();
+
+
+    url= downloadURL;
+    return url;
+  }
+  uploadMuftiData({
+    required BuildContext context,
+    required File selectedFile,
+    required String uid,
+    required String name,
+    required String email,
+    required String number,
+    required String sect,
+    required String speciality,
+    required String bio,
+})async{
+    try{
+      setLoading(true);
+      String url=await _uploadFile(selectedFile: selectedFile);
+      await firestore.collection(usersCollection).where('uid',isEqualTo: user!.uid).get().then((value)async{
+        await firestore.collection(muftiCollection).add({
+          'uid':uid,
+          'name':name,
+          'email':email,
+          'phone_number':number,
+          'sect':sect,
+          'speciality':speciality,
+          'bio':bio,
+          'status':'pending',
+          'degree':url,
+          'profile_image':value.docs.first['profile_image']
+        });
+      });
+      setLoading(false);
+      showSnackBar(context: context,text: "Applied Successfully",color: Colors.green);
+      Navigator.pop(context);
+    }
+    catch(e){
+      setLoading(false);
+      showSnackBar(context: context,text: e.toString(),color: Colors.red);
+    }
   }
 }

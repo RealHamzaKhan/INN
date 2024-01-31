@@ -11,4 +11,7 @@ class FirebaseServices{
   static getPostById({required String docId}){
     return firestore.collection(postCollection).where(FieldPath.documentId, isEqualTo: docId).snapshots();
   }
+  static getMuftis({required String sect}){
+    return firestore.collection(muftiCollection).where('sect',isEqualTo: sect).snapshots();
+  }
 }
