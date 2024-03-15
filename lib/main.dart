@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:inn/provider/auth_provider.dart';
+import 'package:inn/provider/chat_provider.dart';
 import 'package:inn/provider/community_provider.dart';
 import 'package:inn/provider/init_provider.dart';
 import 'package:inn/provider/user_provider.dart';
@@ -12,7 +13,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
 void main() async{
+
   WidgetsFlutterBinding.ensureInitialized();
+  // final SharedPreferences preferences=await SharedPreferences.getInstance();
+  // preferences.setBool('loginRoute', false);
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -32,7 +36,8 @@ class MyApp extends StatelessWidget {
       ChangeNotifierProvider(create: (context)=>AuthProvider()),
       ChangeNotifierProvider(create: (context)=>InitProvider()),
       ChangeNotifierProvider(create: (context)=>UserProvider()),
-      ChangeNotifierProvider(create: (context)=>CommunityProvider())
+      ChangeNotifierProvider(create: (context)=>CommunityProvider()),
+      ChangeNotifierProvider(create: (context)=>ChatProvider())
 
     ],
     child: ScreenUtilInit(

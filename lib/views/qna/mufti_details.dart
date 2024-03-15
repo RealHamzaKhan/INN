@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:inn/views/chats/message_screen.dart';
 import 'package:inn/views/common_widgets/custom_button.dart';
 import 'package:inn/views/common_widgets/custom_text.dart';
 import 'package:inn/views/common_widgets/spacers.dart';
@@ -67,7 +68,9 @@ class MuftiDetailsScreen extends StatelessWidget {
             ),
             Align(alignment: Alignment.bottomCenter,
             child: customButton(containerHeight: 40.h,containerWidth: double.infinity,
-            color: Colors.greenAccent,title: "Ask This Mufti"),
+            color: Colors.greenAccent,title: "Ask This Mufti",onPress: (){
+              Navigator.push(context,MaterialPageRoute(builder: (context)=>MessageScreen(receiverUid:data['uid'] ,receiverName: data['name'],profileImage:data['profile_image'])));
+                }),
             )
           ],
         ),

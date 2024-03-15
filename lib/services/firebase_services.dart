@@ -14,4 +14,10 @@ class FirebaseServices{
   static getMuftis({required String sect}){
     return firestore.collection(muftiCollection).where('sect',isEqualTo: sect).snapshots();
   }
+  static getMessages({required String chatId}){
+    return firestore.collection(chatCollection).doc(chatId).collection('messages').orderBy('timestamp',descending: false).snapshots();
+  }
+  static getChats(){
+    return firestore.collection(chatCollection).where('uids',arrayContains: user!.uid).snapshots();
+  }
 }

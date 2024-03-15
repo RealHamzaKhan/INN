@@ -58,7 +58,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
             children: [
               userProfile.isEmpty?CircleAvatar(
                 radius: 20.r,
-                backgroundImage: const NetworkImage('https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
+                backgroundImage: const NetworkImage('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'),
               ):
               CircleAvatar(
                 radius: 20.r,
